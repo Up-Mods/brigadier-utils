@@ -1,3 +1,5 @@
+import java.nio.charset.StandardCharsets
+
 plugins {
     id 'java-library'
     id 'maven-publish'
@@ -90,7 +92,8 @@ publishing {
 
 signing {
     if (ENV.SIGNING_KEY) {
-        useInMemoryPgpKeys(ENV.SIGNING_KEY_ID, ENV.SIGNING_KEY, ENV.SIGNING_KEY_PASSWORD)
+        def signingKey = new String("${ENV.SIGNING_KEY}".decodeBase64(), StandardCharsets.UTF_8)
+        useInMemoryPgpKeys(ENV.SIGNING_KEY_ID, signingKey, ENV.SIGNING_KEY_PASSWORD)
         sign publishing.publications.mavenJava
         sign configurations.runtimeElements
     }
