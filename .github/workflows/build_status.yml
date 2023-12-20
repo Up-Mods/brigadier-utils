@@ -44,7 +44,7 @@ jobs:
           MAVEN_UPLOAD_PASSWORD: ${{ secrets.SNAPSHOT_MAVEN_UPLOAD_PASSWORD }}
           SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
-          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event.repository.name }}-${{ steps.current-time.outputs.formattedTime }}-build.${{ github.run_number }}
