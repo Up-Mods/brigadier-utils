@@ -43,4 +43,7 @@ jobs:
           MAVEN_UPLOAD_URL: ${{ secrets.SNAPSHOT_MAVEN_UPLOAD_URL }}
           MAVEN_UPLOAD_USERNAME: ${{ secrets.SNAPSHOT_MAVEN_UPLOAD_USERNAME }}
           MAVEN_UPLOAD_PASSWORD: ${{ secrets.SNAPSHOT_MAVEN_UPLOAD_PASSWORD }}
+          SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
         run: ./gradlew publish
