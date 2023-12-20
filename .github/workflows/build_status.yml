@@ -1,0 +1,46 @@
+name: Build Status
+
+on:
+  push:
+    paths-ignore:
+      - '.github/**'
+    branches:
+      - '*'
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'microsoft'
+          java-version: 17
+          cache: 'gradle'
+      - name: Copy Maven Upload URL
+        id: extract_maven_upload_url
+        run: echo "maven_upload_url=${{ secrets.SNAPSHOT_MAVEN_UPLOAD_URL }}" >> $GITHUB_OUTPUT
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+      - name: Build with Gradle
+        run: ./gradlew build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-${{ steps.current-time.outputs.formattedTime }}-build.${{ github.run_number }}
+          path: |
+            build/libs/*.jar
+            build/libs/*.pom
+            build/libs/*.module
+            build/libs/*.asc
+      - name: Maven Release
+        if: steps.extract_maven_upload_url.outputs.maven_upload_url
+        env:
+          TAG: ${{ github.ref_name }}
+          BUILD_TIME: ${{ steps.current-time.outputs.formattedTime }}
+          BUILD_NUMBER: ${{ github.run_number }}
+          MAVEN_UPLOAD_URL: ${{ secrets.SNAPSHOT_MAVEN_UPLOAD_URL }}
+          MAVEN_UPLOAD_USERNAME: ${{ secrets.SNAPSHOT_MAVEN_UPLOAD_USERNAME }}
+          MAVEN_UPLOAD_PASSWORD: ${{ secrets.SNAPSHOT_MAVEN_UPLOAD_PASSWORD }}
+        run: ./gradlew publish
